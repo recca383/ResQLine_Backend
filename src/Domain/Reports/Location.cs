@@ -5,5 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Todos;
-public record Location (float latitude, float longitude, float altitude, int accuracy, int altitudeAccuracy);
+public record Location (float latitude,
+                        float longitude,
+                        float altitude,
+                        int accuracy,
+                        int altitudeAccuracy);
 
