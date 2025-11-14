@@ -1,6 +1,6 @@
-﻿namespace Application.Todos.GetById;
+﻿namespace Application.Todos.Get;
 
-public sealed class TodoResponse
+public sealed class ReportResponse
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

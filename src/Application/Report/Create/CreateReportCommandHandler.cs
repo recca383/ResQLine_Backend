@@ -9,13 +9,13 @@ using SharedKernel;
 
 namespace Application.Todos.Create;
 
-internal sealed class CreateTodoCommandHandler(
+internal sealed class CreateReportCommandHandler(
     IApplicationDbContext context,
     IDateTimeProvider dateTimeProvider,
     IUserContext userContext)
-    : ICommandHandler<CreateTodoCommand, Guid>
+    : ICommandHandler<CreateReportCommand, Guid>
 {
-    public async Task<Result<Guid>> Handle(CreateTodoCommand command, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateReportCommand command, CancellationToken cancellationToken)
     {
         if (userContext.UserId != command.UserId)
         {
@@ -30,20 +30,19 @@ internal sealed class CreateTodoCommandHandler(
             return Result.Failure<Guid>(UserErrors.NotFound(command.UserId));
         }
 
-        var todoItem = new TodoItem
+        var todoItem = new Report
         {
-            RequestedBy = user.Id,
+            ReportedBy = user.Id,
             Description = command.Description,
             Priority = command.Priority,
-            DueDate = command.DueDate,
-            Labels = command.Labels,
-            IsCompleted = false,
-            CreatedAt = dateTimeProvider.UtcNow
+            DateDeleted = command.DueDate,
+            IsDeleted = false,
+            DateCreated = dateTimeProvider.UtcNow
         };
 
-        todoItem.Raise(new TodoItemCreatedDomainEvent(todoItem.Id));
+        todoItem.Raise(new ReportCreatedDomainEvent(todoItem.Id));
 
-        context.TodoItems.Add(todoItem);
+        context.Reports.Add(todoItem);
 
         await context.SaveChangesAsync(cancellationToken);
 

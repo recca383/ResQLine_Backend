@@ -3,7 +3,7 @@ using Domain.Todos;
 
 namespace Application.Todos.Create;
 
-public sealed class CreateTodoCommand : ICommand<Guid>
+public sealed class CreateReportCommand : ICommand<Guid>
 {
     public Guid UserId { get; set; }
     public string Description { get; set; }

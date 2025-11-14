@@ -2,9 +2,9 @@
 
 namespace Application.Todos.Create;
 
-public class CreateTodoCommandValidator : AbstractValidator<CreateTodoCommand>
+public class CreateReportCommandValidator : AbstractValidator<CreateReportCommand>
 {
-    public CreateTodoCommandValidator()
+    public CreateReportCommandValidator()
     {
         RuleFor(c => c.UserId).NotEmpty();
         RuleFor(c => c.Priority).IsInEnum();
