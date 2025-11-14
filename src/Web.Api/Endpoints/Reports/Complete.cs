@@ -1,21 +1,21 @@
 ﻿using Application.Abstractions.Messaging;
-using Application.Todos.Delete;
+using Application.Todos.Complete;
 using SharedKernel;
 using Web.Api.Extensions;
 using Web.Api.Infrastructure;
 
 namespace Web.Api.Endpoints.Todos;
 
-internal sealed class Delete : IEndpoint
+internal sealed class Complete : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("todos/{id:guid}", async (
+        app.MapPut("todos/{id:guid}/complete", async (
             Guid id,
-            ICommandHandler<DeleteTodoCommand> handler,
+            ICommandHandler<CompleteReportCommand> handler,
             CancellationToken cancellationToken) =>
         {
-            var command = new DeleteTodoCommand(id);
+            var command = new CompleteReportCommand(id);
 
             Result result = await handler.Handle(command, cancellationToken);
 

@@ -22,16 +22,15 @@ internal sealed class Create : IEndpoint
     {
         app.MapPost("todos", async (
             Request request,
-            ICommandHandler<CreateTodoCommand, Guid> handler,
+            ICommandHandler<CreateReportCommand, Guid> handler,
             CancellationToken cancellationToken) =>
         {
-            var command = new CreateTodoCommand
+            var command = new CreateReportCommand
             {
                 UserId = request.UserId,
                 Description = request.Description,
                 DueDate = request.DueDate,
-                Labels = request.Labels,
-                Priority = (Priority)request.Priority
+                Labels = request.Labels
             };
 
             Result<Guid> result = await handler.Handle(command, cancellationToken);

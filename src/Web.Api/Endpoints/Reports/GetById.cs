@@ -12,12 +12,12 @@ internal sealed class GetById : IEndpoint
     {
         app.MapGet("todos/{id:guid}", async (
             Guid id,
-            IQueryHandler<GetTodoByIdQuery, TodoResponse> handler,
+            IQueryHandler<GetReportByIdQuery, ReportResponse> handler,
             CancellationToken cancellationToken) =>
         {
-            var command = new GetTodoByIdQuery(id);
+            var command = new GetReportByIdQuery(id);
 
-            Result<TodoResponse> result = await handler.Handle(command, cancellationToken);
+            Result<ReportResponse> result = await handler.Handle(command, cancellationToken);
 
             return result.Match(Results.Ok, CustomResults.Problem);
         })
