@@ -14,7 +14,7 @@ public sealed class ApplicationDbContext(
 {
     public DbSet<User> Users { get; set; }
 
-    public DbSet<TodoItem> TodoItems { get; set; }
+    public DbSet<Report> Reports { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
