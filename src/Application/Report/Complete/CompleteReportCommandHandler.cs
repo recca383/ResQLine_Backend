@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
+using Domain.Reports;
 using Domain.Todos;
 using Domain.Todos.Events;
 using Microsoft.EntityFrameworkCore;
