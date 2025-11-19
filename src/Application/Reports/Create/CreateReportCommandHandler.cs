@@ -30,7 +30,7 @@ internal sealed class CreateReportCommandHandler(
             return Result.Failure<Guid>(UserErrors.NotFound(command.UserId));
         }
 
-        var todoItem = new Domain.Reports.Report
+        var todoItem = new Report
         {
             Id = Guid.NewGuid(),
             ReportedBy = user.Id,
