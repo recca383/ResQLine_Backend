@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Todos;
-public record Location (float latitude,
-                        float longitude,
-                        float altitude,
-                        int accuracy,
-                        int altitudeAccuracy);
+namespace Domain.Reports;
+public record Location (float Latitude,
+                        float Longitude,
+                        float Altitude,
+                        int Accuracy,
+                        int AltitudeAccuracy);
 

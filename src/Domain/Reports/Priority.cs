@@ -1,7 +1,5 @@
-﻿namespace Domain.Todos;
+﻿namespace Domain.Reports;
 
-public class Priority
-{
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-}
+public record Priority(
+                        Guid Id,
+                        string Name);

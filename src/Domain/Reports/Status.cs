@@ -4,15 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Todos;
+namespace Domain.Reports;
 
-    public enum Status
-    {
-        None,
-        Pending,
-        Assigned,
-        InProgress,
-        Done,
-        OnHold,
-    }
+    public record Status(
+                        Guid Id,
+                        string Name
+                         );
 
