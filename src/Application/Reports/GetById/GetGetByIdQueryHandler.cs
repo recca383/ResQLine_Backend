@@ -1,11 +1,11 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
-using Domain.Todos;
+using Domain.Reports;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
-namespace Application.Todos.GetById;
+namespace Application.Reports.GetById;
 
 internal sealed class GetGetByIdQueryHandler(IApplicationDbContext context, IUserContext userContext)
     : IQueryHandler<GetReportByIdQuery, ReportResponse>
@@ -21,7 +21,7 @@ internal sealed class GetGetByIdQueryHandler(IApplicationDbContext context, IUse
                 Description = todoItem.Description,
                 IsCompleted = todoItem.IsDeleted,
                 CreatedAt = todoItem.DateCreated,
-                CompletedAt = todoItem.DateDeleted
+                CompletedAt = todoItem.DateResolved
             })
             .SingleOrDefaultAsync(cancellationToken);
 

@@ -1,5 +1,5 @@
 ﻿using Application.Abstractions.Messaging;
 
-namespace Application.Todos.GetById;
+namespace Application.Reports.GetById;
 
 public sealed record GetReportByIdQuery(Guid TodoItemId) : IQuery<ReportResponse>;

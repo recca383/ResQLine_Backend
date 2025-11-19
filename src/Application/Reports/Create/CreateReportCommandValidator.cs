@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.Todos.Create;
+namespace Application.Reports.Create;
 
 public class CreateReportCommandValidator : AbstractValidator<CreateReportCommand>
 {

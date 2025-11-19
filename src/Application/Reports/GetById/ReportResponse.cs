@@ -1,4 +1,4 @@
-﻿namespace Application.Todos.Get;
+﻿namespace Application.Reports.GetById;
 
 public sealed class ReportResponse
 {

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.Todos.Delete;
+namespace Application.Reports.Delete;
 
 internal sealed class DeleteReportCommandValidator : AbstractValidator<DeleteReportCommand>
 {

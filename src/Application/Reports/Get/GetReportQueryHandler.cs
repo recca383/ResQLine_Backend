@@ -5,7 +5,7 @@ using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
-namespace Application.Todos.Get;
+namespace Application.Reports.Get;
 
 internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUserContext userContext)
     : IQueryHandler<GetReportQuery, List<ReportResponse>>
@@ -26,7 +26,7 @@ internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUser
                 Description = todoItem.Description,
                 IsCompleted = todoItem.IsDeleted,
                 CreatedAt = todoItem.DateCreated,
-                CompletedAt = todoItem.DateDeleted
+                CompletedAt = todoItem.DateResolved
             })
             .ToListAsync(cancellationToken);
 
