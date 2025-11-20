@@ -1,5 +1,5 @@
 ﻿using Application.Abstractions.Messaging;
-using Application.Todos.Complete;
+using Application.Reports.Complete;
 using SharedKernel;
 using Web.Api.Extensions;
 using Web.Api.Infrastructure;
@@ -10,18 +10,18 @@ internal sealed class Complete : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut("todos/{id:guid}/complete", async (
+        app.MapPut("reports/{id:guid}/complete", async (
             Guid id,
-            ICommandHandler<CompleteReportCommand> handler,
+            ICommandHandler<ResolveReportCommand> handler,
             CancellationToken cancellationToken) =>
         {
-            var command = new CompleteReportCommand(id);
+            var command = new ResolveReportCommand(id);
 
             Result result = await handler.Handle(command, cancellationToken);
 
             return result.Match(Results.NoContent, CustomResults.Problem);
         })
-        .WithTags(Tags.Todos)
+        .WithTags(Tags.Reports)
         .RequireAuthorization();
     }
 }
