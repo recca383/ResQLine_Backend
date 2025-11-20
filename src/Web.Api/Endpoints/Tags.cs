@@ -2,6 +2,6 @@
 
 public static class Tags
 {
-    public const string Users = "Users";
-    public const string Todos = "todos";
+    public const string Users = "users";
+    public const string Reports = "reports";
 }
