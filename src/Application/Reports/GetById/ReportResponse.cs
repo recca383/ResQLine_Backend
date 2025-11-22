@@ -1,13 +1,14 @@
-﻿namespace Application.Reports.GetById;
+﻿using Domain.Reports;
+
+namespace Application.Reports.GetById;
 
 public sealed class ReportResponse
 {
     public Guid Id { get; set; }
-    public Guid UserId { get; set; }
-    public string Description { get; set; }
-    public DateTime? DueDate { get; set; }
-    public List<string> Labels { get; set; }
-    public bool IsCompleted { get; set; }
+    public byte[] Image { get; set; }
+    public Category Category { get; set; }
+    public string Title { get; set; }
+    public string? Description { get; set; }
+    public Location Location { get; set; }
     public DateTime CreatedAt { get; set; }
-    public DateTime? CompletedAt { get; set; }
 }
