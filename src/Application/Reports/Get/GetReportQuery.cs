@@ -2,4 +2,12 @@
 
 namespace Application.Reports.Get;
 
-public sealed record GetReportQuery(Guid UserId) : IQuery<List<ReportResponse>>;
+public sealed record GetReportQuery(
+    string sort,
+    int pageSize,
+    int pageoffset
+    
+    
+    ) : IQuery<List<ReportResponse>>;
+
+

@@ -1,27 +1,33 @@
 ﻿using Application.Abstractions.Messaging;
-using Application.Todos.Get;
+using Application.Reports.Get;
 using SharedKernel;
 using Web.Api.Extensions;
 using Web.Api.Infrastructure;
 
-namespace Web.Api.Endpoints.Todos;
+namespace Web.Api.Endpoints.Reports;
 
 internal sealed class Get : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("todos", async (
-            Guid userId,
+        app.MapGet("reports", async (
+            string sort,
+            int pageSize,
+            int pageoffset,
             IQueryHandler<GetReportQuery, List<ReportResponse>> handler,
             CancellationToken cancellationToken) =>
         {
-            var query = new GetReportQuery(userId);
+            var query = new GetReportQuery(
+                                    sort,
+                                    pageSize,
+                                    pageoffset
+                                    );
 
             Result<List<ReportResponse>> result = await handler.Handle(query, cancellationToken);
 
             return result.Match(Results.Ok, CustomResults.Problem);
         })
-        .WithTags(Tags.Todos)
+        .WithTags(Tags.Reports)
         .RequireAuthorization();
     }
 }

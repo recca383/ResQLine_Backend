@@ -5,7 +5,7 @@ using SharedKernel;
 using Web.Api.Extensions;
 using Web.Api.Infrastructure;
 
-namespace Web.Api.Endpoints.Todos;
+namespace Web.Api.Endpoints.Reports;
 
 internal sealed class Create : IEndpoint
 {
@@ -16,7 +16,7 @@ internal sealed class Create : IEndpoint
         public Category Category { get; set; } = Category.None;
         public string Title { get; set; }
         public string? Description { get; set; }
-        public Location ReportedAt { get; set; }
+        public Location Location { get; set; }
     }
 
     public void MapEndpoint(IEndpointRouteBuilder app)
@@ -33,7 +33,7 @@ internal sealed class Create : IEndpoint
                 Category = request.Category,
                 Title = request.Title,
                 Description = request.Description,
-                ReportedAt = request.ReportedAt
+                ReportedAt = request.Location
             };
 
             Result<Guid> result = await handler.Handle(command, cancellationToken);

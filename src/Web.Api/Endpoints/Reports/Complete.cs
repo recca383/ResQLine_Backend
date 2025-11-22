@@ -4,7 +4,7 @@ using SharedKernel;
 using Web.Api.Extensions;
 using Web.Api.Infrastructure;
 
-namespace Web.Api.Endpoints.Todos;
+namespace Web.Api.Endpoints.Reports;
 
 internal sealed class Complete : IEndpoint
 {

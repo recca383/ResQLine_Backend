@@ -1,16 +1,16 @@
 ﻿using Application.Abstractions.Messaging;
-using Application.Todos.Delete;
+using Application.Reports.Delete;
 using SharedKernel;
 using Web.Api.Extensions;
 using Web.Api.Infrastructure;
 
-namespace Web.Api.Endpoints.Todos;
+namespace Web.Api.Endpoints.Reports;
 
 internal sealed class Delete : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("todos/{id:guid}", async (
+        app.MapDelete("reports/{id:guid}", async (
             Guid id,
             ICommandHandler<DeleteReportCommand> handler,
             CancellationToken cancellationToken) =>
@@ -21,7 +21,7 @@ internal sealed class Delete : IEndpoint
 
             return result.Match(Results.NoContent, CustomResults.Problem);
         })
-        .WithTags(Tags.Todos)
+        .WithTags(Tags.Reports)
         .RequireAuthorization();
     }
 }

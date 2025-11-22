@@ -1,16 +1,16 @@
 ﻿using Application.Abstractions.Messaging;
-using Application.Todos.GetById;
+using Application.Reports.GetById;
 using SharedKernel;
 using Web.Api.Extensions;
 using Web.Api.Infrastructure;
 
-namespace Web.Api.Endpoints.Todos;
+namespace Web.Api.Endpoints.Reports;
 
 internal sealed class GetById : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("todos/{id:guid}", async (
+        app.MapGet("reports/{id:guid}", async (
             Guid id,
             IQueryHandler<GetReportByIdQuery, ReportResponse> handler,
             CancellationToken cancellationToken) =>
@@ -21,7 +21,7 @@ internal sealed class GetById : IEndpoint
 
             return result.Match(Results.Ok, CustomResults.Problem);
         })
-        .WithTags(Tags.Todos)
+        .WithTags(Tags.Reports)
         .RequireAuthorization();
     }
 }

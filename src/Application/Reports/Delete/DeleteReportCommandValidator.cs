@@ -6,6 +6,6 @@ internal sealed class DeleteReportCommandValidator : AbstractValidator<DeleteRep
 {
     public DeleteReportCommandValidator()
     {
-        RuleFor(c => c.TodoItemId).NotEmpty();
+        RuleFor(c => c.ReportId).NotEmpty();
     }
 }

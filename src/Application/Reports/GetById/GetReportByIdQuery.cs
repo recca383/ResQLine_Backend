@@ -2,4 +2,4 @@
 
 namespace Application.Reports.GetById;
 
-public sealed record GetReportByIdQuery(Guid TodoItemId) : IQuery<ReportResponse>;
+public sealed record GetReportByIdQuery(Guid ReportId) : IQuery<ReportResponse>;

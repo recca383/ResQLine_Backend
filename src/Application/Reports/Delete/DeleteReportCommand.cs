@@ -2,4 +2,4 @@
 
 namespace Application.Reports.Delete;
 
-public sealed record DeleteReportCommand(Guid TodoItemId) : ICommand;
+public sealed record DeleteReportCommand(Guid ReportId) : ICommand;
