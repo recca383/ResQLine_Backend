@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Domain.Reports;
 
-    public record Status(
-                        Guid Id,
-                        string Name
-                         );
+public enum Status
+{
+    Submitted,
+    Under_Review,
+    In_Progress,
+    Resolved,
+    Rejected
+}
+
 

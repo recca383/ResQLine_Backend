@@ -1,5 +1,10 @@
 ﻿namespace Domain.Reports;
 
-public record Priority(
-                        Guid Id,
-                        string Name);
+public enum Priority
+{
+    Low,
+    Medium,
+    High,
+    Urgent,
+    Emergency
+}
