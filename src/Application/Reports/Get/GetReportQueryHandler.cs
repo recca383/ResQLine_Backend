@@ -1,35 +1,34 @@
 ﻿using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
+using Domain.Reports;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
 namespace Application.Reports.Get;
 
-internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUserContext userContext)
+internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUserContext user)
     : IQueryHandler<GetReportQuery, List<ReportResponse>>
 {
     public async Task<Result<List<ReportResponse>>> Handle(GetReportQuery query, CancellationToken cancellationToken)
     {
-        if (query.UserId != userContext.UserId)
-        {
-            return Result.Failure<List<ReportResponse>>(UserErrors.Unauthorized());
-        }
-
-        List<ReportResponse> todos = await context.Reports
-            .Where(todoItem => todoItem.ReportedBy == query.UserId)
-            .Select(todoItem => new ReportResponse
+        List<ReportResponse> reports = await context.Reports
+            .Where(u => u.ReportedBy == user.UserId && !u.IsDeleted)
+            .Select(report => new ReportResponse
             {
-                Id = todoItem.Id,
-                UserId = todoItem.ReportedBy,
-                Description = todoItem.Description,
-                IsCompleted = todoItem.IsDeleted,
-                CreatedAt = todoItem.DateCreated,
-                CompletedAt = todoItem.DateResolved
+                Id = report.Id,
+                Image = report.Image,
+                Category = report.Category,
+                Title = report.Title,
+                Location = report.ReportedAt,
+                CreatedAt = report.DateCreated,
             })
+            .OrderByDescending(r => r.CreatedAt)
+            .Skip((query.pageoffset - 1) * query.pageSize)
+            .Take(query.pageSize)
             .ToListAsync(cancellationToken);
-
-        return todos;
+            
+        return reports;
     }
 }
