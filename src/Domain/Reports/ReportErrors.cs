@@ -1,14 +1,19 @@
 ﻿using SharedKernel;
 
-namespace Domain.Todos;
+namespace Domain.Reports;
 
 public static class ReportErrors
 {
-    public static Error AlreadyCompleted(Guid todoItemId) => Error.Problem(
-        "TodoItems.AlreadyCompleted",
-        $"The todo item with Id = '{todoItemId}' is already completed.");
+    public static Error AlreadyResolved(Guid reportId) => Error.Problem(
+        "Report.AlreadyResolved",
+        $"The report with Id = '{reportId}' is already resolved.");
 
-    public static Error NotFound(Guid todoItemId) => Error.NotFound(
-        "TodoItems.NotFound",
-        $"The to-do item with the Id = '{todoItemId}' was not found");
+    public static Error NotFound(Guid reportId) => Error.NotFound(
+        "Report.NotFound",
+        $"The report with the Id = '{reportId}' was not found");
+
+    public static Error AlreadyDeleted(Guid reportId) => Error.Problem(
+        "Report.AlreadyDeleted",
+        $"The report with the Id = '{reportId}' is already deleted."
+        );
 }

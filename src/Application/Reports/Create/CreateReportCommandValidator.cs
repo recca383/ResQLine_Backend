@@ -7,8 +7,7 @@ public class CreateReportCommandValidator : AbstractValidator<CreateReportComman
     public CreateReportCommandValidator()
     {
         RuleFor(c => c.UserId).NotEmpty();
-        RuleFor(c => c.Priority).IsInEnum();
+        RuleFor(c => c.Category).IsInEnum();
         RuleFor(c => c.Description).NotEmpty().MaximumLength(255);
-        RuleFor(c => c.DueDate).GreaterThanOrEqualTo(DateTime.Today).When(x => x.DueDate.HasValue);
     }
 }

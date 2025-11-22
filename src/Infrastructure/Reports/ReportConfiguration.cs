@@ -1,5 +1,4 @@
 ﻿using Domain.Reports;
-using Domain.Todos;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -13,11 +12,9 @@ internal sealed class ReportConfiguration : IEntityTypeConfiguration<Report>
         builder.HasKey(t => t.Id);
 
         builder.Property(t => t.DateCreated).HasConversion(d => DateTime.SpecifyKind(d, DateTimeKind.Utc), v => v);
-        builder.Property(t => t.DateDeleted).HasConversion(d => d != null ? DateTime.SpecifyKind(d.Value, DateTimeKind.Utc) : d, v => v);
+        builder.Property(t => t.DateResolved).HasConversion(d => d != null ? DateTime.SpecifyKind(d.Value, DateTimeKind.Utc) : d, v => v);
         builder.Property(t => t.DateLastUpdated).HasConversion(d => d != null ? DateTime.SpecifyKind(d.Value, DateTimeKind.Utc) : d, v => v);
 
         builder.HasOne<User>().WithMany().HasForeignKey(t => t.ReportedBy);
-        builder.HasOne<Category>().WithMany().HasForeignKey(t => t.Category);
-        builder.HasOne<Priority>().WithMany().HasForeignKey(t => t.Priority);
     }
 }
