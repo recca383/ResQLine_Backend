@@ -2,7 +2,6 @@
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
 using Domain.Reports;
-using Domain.Reports;
 using Domain.Reports.Events;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
@@ -14,17 +13,22 @@ internal sealed class DeleteReportCommandHandler(IApplicationDbContext context, 
 {
     public async Task<Result> Handle(DeleteReportCommand command, CancellationToken cancellationToken)
     {
-        Reports? todoItem = await context.Reports
-            .SingleOrDefaultAsync(t => t.Id == command.TodoItemId && t.ReportedBy == userContext.UserId, cancellationToken);
+        Report? report = await context.Reports
+            .SingleOrDefaultAsync(t => t.Id == command.ReportId && t.ReportedBy == userContext.UserId, cancellationToken);
 
-        if (todoItem is null)
+        if (report is null)
         {
-            return Result.Failure(ReportErrors.NotFound(command.TodoItemId));
+            return Result.Failure(ReportErrors.NotFound(command.ReportId));
         }
 
-        context.Reports.Remove(todoItem);
+        if (report.IsDeleted)
+        {
+            return Result.Failure(ReportErrors.AlreadyDeleted(command.ReportId));
+        }    
 
-        todoItem.Raise(new ReportDeletedDomainEvent(todoItem.Id));
+        report.IsDeleted = true;
+
+        report.Raise(new ReportDeletedDomainEvent(report.Id));
 
         await context.SaveChangesAsync(cancellationToken);
 
