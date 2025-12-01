@@ -1,7 +1,9 @@
 ﻿using System.Text;
 using Application.Abstractions.Authentication;
+using Application.Abstractions.Authentication.SMS;
 using Application.Abstractions.Data;
 using Infrastructure.Authentication;
+using Infrastructure.Authentication.SMS;
 using Infrastructure.Authorization;
 using Infrastructure.Database;
 using Infrastructure.DomainEvents;
@@ -82,6 +84,8 @@ public static class DependencyInjection
         services.AddScoped<IUserContext, UserContext>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<ITokenProvider, TokenProvider>();
+        services.AddScoped<IOtpService, OtpService>();
+        services.AddSingleton<ISmsSender, SmsSender>();
 
         return services;
     }
