@@ -10,6 +10,6 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.HasKey(u => u.Id);
 
-        builder.HasIndex(u => u.Email).IsUnique();
+        builder.HasIndex(u => u.MobileNumber).IsUnique();
     }
 }
