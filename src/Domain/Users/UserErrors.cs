@@ -8,15 +8,19 @@ public static class UserErrors
         "Users.NotFound",
         $"The user with the Id = '{userId}' was not found");
 
+    public static Error NotVerified => Error.Problem(
+        "Users.NotVerified",
+        $"The user has cancelled verification");
+
     public static Error Unauthorized() => Error.Failure(
         "Users.Unauthorized",
         "You are not authorized to perform this action.");
 
-    public static readonly Error NotFoundByEmail = Error.NotFound(
-        "Users.NotFoundByEmail",
-        "The user with the specified email was not found");
+    public static readonly Error NotFoundByMobileNumber = Error.NotFound(
+        "Users.MobileNumber",
+        "The user with the specified mobile number was not found");
 
-    public static readonly Error EmailNotUnique = Error.Conflict(
-        "Users.EmailNotUnique",
-        "The provided email is not unique");
+    public static readonly Error MobileNumberNotUnique = Error.Conflict(
+        "Users.MobileNumber",
+        "The provided mobile number is not unique");
 }
