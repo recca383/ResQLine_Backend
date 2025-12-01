@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Address;
+namespace Domain.Addresses;
 public class Barangay
 {
     public int Id { get; set; }
