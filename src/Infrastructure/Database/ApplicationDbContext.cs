@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Data;
+using Domain.OtpStores;
 using Domain.Reports;
 using Domain.Users;
 using Infrastructure.DomainEvents;
@@ -15,6 +16,7 @@ public sealed class ApplicationDbContext(
     public DbSet<User> Users { get; set; }
 
     public DbSet<Report> Reports { get; set; }
+    public DbSet<OtpStore> OtpStores { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
