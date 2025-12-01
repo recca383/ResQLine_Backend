@@ -4,8 +4,13 @@ namespace Infrastructure.Time;
 
 internal sealed class DateTimeProvider : IDateTimeProvider
 {
-    public DateTime UtcNow => TimeZoneInfo.ConvertTimeFromUtc(
-        DateTime.UtcNow,
-        TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila")
+    private static readonly TimeZoneInfo PhTimeZone =
+        TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
+
+    public DateTime UtcNow => DateTime.UtcNow;
+
+    public DateTime NowInPhilippines => TimeZoneInfo.ConvertTimeFromUtc(
+        DateTime.Now,
+        PhTimeZone
         );
 }
