@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace Application.Abstractions.Authentication.SMS;
 public interface ISmsSender
 {
-    bool SendMessage(string MobileNumber, string Message);
+    Task<bool> SendMessage(string MobileNumber, string Message);
 }

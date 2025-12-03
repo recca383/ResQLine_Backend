@@ -19,6 +19,7 @@ internal sealed class OtpService(
     IConfiguration configuration,
     IApplicationDbContext context,
     IDateTimeProvider dateTimeProvider,
+    ITokenProvider tokenProvider,
     ISmsSender sender) : IOtpService
 {
     public async Task<Result> Send(string mobileNumber, CancellationToken cancellationtoken)
@@ -38,6 +39,7 @@ internal sealed class OtpService(
         
         var otp = new OtpStore()
         {
+            Id = Guid.NewGuid(),
             MobileNumber = mobileNumber,
             Otp = result.ToString(),
             Expiry = dateTimeProvider.UtcNow.AddMinutes(expiryinminutes)
@@ -46,7 +48,7 @@ internal sealed class OtpService(
 
         string message = configuration.GetValue<string>("Otp:Message") + otp.Otp;
 
-        if(!sender.SendMessage(mobileNumber, message))
+        if(sender.SendMessage(mobileNumber, message) == null)
         {
             return Result.Failure<bool>(OtpErrors.OtpFailedToSend);
         }
@@ -55,28 +57,21 @@ internal sealed class OtpService(
         await context.SaveChangesAsync(cancellationtoken);
 
         return Result.Success(true);
-
     }
 
-    public async Task<Result> Verify(string mobileNumber, string otp, ITokenProvider tokenProvider, CancellationToken cancellationToken)
+    public async Task<Result<string>> Verify(
+        OtpStore storedOtp,
+        string otp,
+        CancellationToken cancellationToken)
     {
-         OtpStore storedOtp = await context.OtpStores
-            .AsNoTracking()
-            .SingleOrDefaultAsync(s => s.MobileNumber == mobileNumber, cancellationToken);
-
-        if (storedOtp == null)
-        {
-            return Result.Failure<bool>(OtpErrors.NoOtpRequested(mobileNumber));
-        }
-
         if (storedOtp.Otp != otp)
         {
-            return Result.Failure<bool>(OtpErrors.OtpNotEqual);
+            return Result.Failure<string>(OtpErrors.OtpNotEqual);
         }
 
         if (storedOtp.Expiry < DateTime.UtcNow)
         {
-            return Result.Failure<bool>(OtpErrors.OtpExpired);
+            return Result.Failure<string>(OtpErrors.OtpExpired);
         }
 
         context.OtpStores.Remove(storedOtp);
@@ -84,11 +79,11 @@ internal sealed class OtpService(
 
         User user = await context.Users
             .AsNoTracking()
-            .SingleOrDefaultAsync(s => s.MobileNumber == mobileNumber, cancellationToken);
+            .SingleOrDefaultAsync(s => s.MobileNumber == storedOtp.MobileNumber, cancellationToken);
 
         string token = tokenProvider.Create(user!);
 
-        return Result.Success(token);
+        return Result<string>.Success(token);
             
     }
 }
