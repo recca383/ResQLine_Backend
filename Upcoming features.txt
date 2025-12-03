@@ -1,5 +1,0 @@
-Ticket Features
-Assign to
-Update ticket
-
-Get tickets assigned to user 
