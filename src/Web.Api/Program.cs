@@ -1,5 +1,6 @@
 using System.Reflection;
 using Application;
+using DotNetEnv;
 using HealthChecks.UI.Client;
 using Infrastructure;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -7,7 +8,11 @@ using Serilog;
 using Web.Api;
 using Web.Api.Extensions;
 
+Env.Load();
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
 

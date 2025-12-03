@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Abstractions.Authentication.SMS;
 using Microsoft.Extensions.Configuration;
-using Twilio.TwiML.Messaging;
 
 
 namespace Infrastructure.Authentication.SMS;
