@@ -81,6 +81,7 @@ public static class DependencyInjection
             });
 
         services.AddHttpContextAccessor();
+        services.AddHttpClient<SmsSender>();
         services.AddScoped<IUserContext, UserContext>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<ITokenProvider, TokenProvider>();
