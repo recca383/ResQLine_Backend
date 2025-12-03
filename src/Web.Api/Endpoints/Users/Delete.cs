@@ -11,12 +11,11 @@ internal sealed class Delete : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete("users/{id:guid}", async (
-            Guid id,
+        app.MapDelete("users/", async (
             ICommandHandler<DeleteUserCommand> handler,
             CancellationToken cancellationToken) =>
         {
-            var command = new DeleteUserCommand(id);
+            var command = new DeleteUserCommand();
 
             Result result = await handler.Handle(command, cancellationToken);
 

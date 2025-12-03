@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
 using Domain.Users;
@@ -10,17 +11,17 @@ using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
 namespace Application.Users.Delete;
-internal sealed class DeleteUserCommandHandler(IApplicationDbContext context)
+internal sealed class DeleteUserCommandHandler(IApplicationDbContext context, IUserContext userContext)
     : ICommandHandler<DeleteUserCommand>
 {
     public async Task<Result> Handle(DeleteUserCommand command, CancellationToken cancellationToken)
     {
         User? user = await context.Users
-            .SingleOrDefaultAsync(u => u.Id == command.Id, cancellationToken);
+            .SingleOrDefaultAsync(u => u.Id == userContext.UserId, cancellationToken);
 
         if (user == null)
         {
-            return Result.Failure(UserErrors.NotFound(command.Id));
+            return Result.Failure(UserErrors.NotFound(userContext.UserId));
         }
 
         context.Users.Remove(user);
