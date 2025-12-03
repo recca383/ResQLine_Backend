@@ -17,10 +17,14 @@ public static class UserErrors
         "You are not authorized to perform this action.");
 
     public static readonly Error NotFoundByMobileNumber = Error.NotFound(
-        "Users.MobileNumber",
+        "Users.MobileNumberNotFound",
         "The user with the specified mobile number was not found");
 
     public static readonly Error MobileNumberNotUnique = Error.Conflict(
-        "Users.MobileNumber",
+        "Users.MobileNumberAlreadyTaken",
         "The provided mobile number is not unique");
+
+    public static Error AlreadySet(string mobileNumber) => Error.Conflict(
+        "Users.AlreadySet",
+        $"The mobile number: {mobileNumber} is already set");
 }
