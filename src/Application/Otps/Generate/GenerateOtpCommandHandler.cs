@@ -6,7 +6,7 @@ using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
-namespace Application.Otps.GenerateOtp;
+namespace Application.Otps.Generate;
 
 internal sealed class GenerateOtpCommandHandler(
     IApplicationDbContext context,

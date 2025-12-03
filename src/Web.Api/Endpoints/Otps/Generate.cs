@@ -1,18 +1,18 @@
 ﻿using Application.Abstractions.Messaging;
-using Application.Otps.GenerateOtp;
+using Application.Otps.Generate;
 using SharedKernel;
 using Web.Api.Extensions;
 using Web.Api.Infrastructure;
 
 namespace Web.Api.Endpoints.Otps;
 
-internal sealed class GenerateOtp : IEndpoint
+internal sealed class Generate : IEndpoint
 {
     public sealed record Request(string mobileNumber);
 
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("users/generateotp", async (
+        app.MapPost("otp/generate", async (
             Request request,
             ICommandHandler<GenerateOtpCommand> handler,
             CancellationToken cancellationToken) =>
@@ -23,6 +23,6 @@ internal sealed class GenerateOtp : IEndpoint
 
             return result.Match(Results.NoContent, CustomResults.Problem);
         })
-        .WithTags(Tags.Users);
+        .WithTags(Tags.Otp);
     }
 }

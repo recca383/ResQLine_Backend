@@ -16,11 +16,11 @@ public static class OtpErrors
     "Otp.NotFound",
     $"{mobileNumber} did not request Otp");
 
-    public static readonly Error OtpNotEqual = Error.Failure(
+    public static readonly Error OtpNotEqual = Error.Conflict(
     "Otp.NotEqual",
     "Otp Not Equal");
 
-    public static readonly Error OtpExpired = Error.Failure(
+    public static readonly Error OtpExpired = Error.Conflict(
     "Otp.Expired",
     "Failed to verify OTP on time");
 }
