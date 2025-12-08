@@ -20,7 +20,8 @@ internal sealed class VerifyOtpComamndHandler(
     {
         OtpStore storedOtp = await context.OtpStores
             .AsNoTracking()
-            .SingleOrDefaultAsync(u => u.MobileNumber == command.mobileNumber,
+            .OrderByDescending(x => x.Expiry)
+            .FirstOrDefaultAsync(u => u.MobileNumber == command.mobileNumber,
             cancellationToken);
 
         if(storedOtp == null)

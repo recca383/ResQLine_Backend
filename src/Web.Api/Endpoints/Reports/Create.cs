@@ -12,7 +12,7 @@ internal sealed class Create : IEndpoint
     public sealed class Request
     {
         public Guid UserId { get; set; }
-        public byte[] Image { get; set; }
+        public string Image { get; set; }
         public Category Category { get; set; } = Category.None;
         public string Title { get; set; }
         public string? Description { get; set; }
@@ -26,10 +26,12 @@ internal sealed class Create : IEndpoint
             ICommandHandler<CreateReportCommand, Guid> handler,
             CancellationToken cancellationToken) =>
         {
+            byte[] image = Convert.FromBase64String(request.Image);
+
             var command = new CreateReportCommand
             {
                 UserId = request.UserId,
-                Image = request.Image,
+                Image = image,
                 Category = request.Category,
                 Title = request.Title,
                 Description = request.Description,
