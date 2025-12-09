@@ -11,8 +11,7 @@ internal sealed class Create : IEndpoint
 {
     public sealed class Request
     {
-        public Guid UserId { get; set; }
-        public string Image { get; set; }
+        public required string Image { get; set; }
         public Category Category { get; set; } = Category.None;
         public string Title { get; set; }
         public string? Description { get; set; }
@@ -30,7 +29,6 @@ internal sealed class Create : IEndpoint
 
             var command = new CreateReportCommand
             {
-                UserId = request.UserId,
                 Image = image,
                 Category = request.Category,
                 Title = request.Title,

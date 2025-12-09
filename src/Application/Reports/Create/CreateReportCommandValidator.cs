@@ -6,7 +6,6 @@ public class CreateReportCommandValidator : AbstractValidator<CreateReportComman
 {
     public CreateReportCommandValidator()
     {
-        RuleFor(c => c.UserId).NotEmpty();
         RuleFor(c => c.Category).IsInEnum();
         RuleFor(c => c.Description).NotEmpty().MaximumLength(255);
     }

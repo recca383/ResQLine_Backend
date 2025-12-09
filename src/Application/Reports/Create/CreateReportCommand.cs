@@ -5,7 +5,6 @@ namespace Application.Reports.Create;
 
 public sealed class CreateReportCommand : ICommand<Guid>
 {
-    public Guid UserId { get; set; }
     public byte[] Image { get; set; }
     public Category Category { get; set; } = Category.None;
     public string Title { get; set; }
