@@ -30,7 +30,6 @@ internal sealed class CreateReportCommandHandler(
             Id = Guid.NewGuid(),
             ReportedBy = user.Id,
             Image = command.Image,
-            Title = command.Title,
             Description = command.Description,
             ReportedAt = command.ReportedAt,
             Status = Status.Under_Review,

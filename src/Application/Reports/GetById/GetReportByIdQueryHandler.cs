@@ -19,7 +19,6 @@ internal sealed class GetReportByIdQueryHandler(IApplicationDbContext context, I
                 Id = reportitem.Id,
                 Image = reportitem.Image,
                 Category = reportitem.Category,
-                Title = reportitem.Title, 
                 Description = reportitem.Description,
                 Location = reportitem.ReportedAt,
             })

@@ -31,7 +31,6 @@ internal sealed class Create : IEndpoint
             {
                 Image = image,
                 Category = request.Category,
-                Title = request.Title,
                 Description = request.Description,
                 ReportedAt = request.Location
             };

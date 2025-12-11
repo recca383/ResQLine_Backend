@@ -20,7 +20,6 @@ internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUser
                 Id = report.Id,
                 Image = report.Image,
                 Category = report.Category,
-                Title = report.Title,
                 Location = report.ReportedAt,
                 CreatedAt = report.DateCreated,
             })
