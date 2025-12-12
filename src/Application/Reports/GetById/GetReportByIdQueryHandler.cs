@@ -13,6 +13,7 @@ internal sealed class GetReportByIdQueryHandler(IApplicationDbContext context, I
     public async Task<Result<ReportResponse>> Handle(GetReportByIdQuery query, CancellationToken cancellationToken)
     {
         ReportResponse? report = await context.Reports
+            .AsNoTracking()
             .Where(reportitem => reportitem.Id == query.ReportId && reportitem.ReportedBy == userContext.UserId)
             .Select(reportitem => new ReportResponse
             {

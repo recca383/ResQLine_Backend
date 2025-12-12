@@ -14,6 +14,7 @@ internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUser
     public async Task<Result<List<ReportResponse>>> Handle(GetReportQuery query, CancellationToken cancellationToken)
     {
         List<ReportResponse> reports = await context.Reports
+            .AsNoTracking()
             .Where(u => u.ReportedBy == user.UserId && !u.IsDeleted)
             .Select(report => new ReportResponse
             {
@@ -26,7 +27,6 @@ internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUser
                 Status = report.Status,
                 
             })
-            
             .OrderByDescending(r => r.CreatedAt)
             .Skip(Math.Max(0,query.pageoffset - 1) * query.pageSize)
             .Take(query.pageSize)
