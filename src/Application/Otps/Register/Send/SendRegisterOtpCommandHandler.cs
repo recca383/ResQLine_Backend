@@ -26,6 +26,14 @@ internal sealed class SendRegisterOtpCommandHandler(
             u.MobileNumber == command.MobileNumber,
             cancellationToken);
 
+        List<OtpStore> storedOtps = await context.OtpStores
+            .Where(o =>
+                o.MobileNumber == command.MobileNumber &&
+                o.OtpType == OtpType.Register)
+            .ToListAsync(cancellationToken);
+
+        context.OtpStores.RemoveRange(storedOtps);
+
         if (isUserExists)
         {
             return Result.Failure<string>(UserErrors.MobileNumberNotUnique);

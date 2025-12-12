@@ -26,7 +26,15 @@ internal sealed class SendLoginOtpCommandHandler(
             u.MobileNumber == command.MobileNumber,
             cancellationToken);
 
-        if(user is null)
+        List<OtpStore> storedOtps = await context.OtpStores
+            .Where(o =>
+                o.MobileNumber == command.MobileNumber &&
+                o.OtpType == OtpType.Login)
+            .ToListAsync(cancellationToken);
+
+        context.OtpStores.RemoveRange(storedOtps);
+
+        if (user is null)
         {
             return Result.Failure<string>(UserErrors.NotFoundByMobileNumber);
         }
