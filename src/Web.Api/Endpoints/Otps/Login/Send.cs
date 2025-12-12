@@ -1,23 +1,23 @@
-﻿using Application.Abstractions.Messaging;
-using Application.Otps.Generate;
+﻿
+using Application.Abstractions.Messaging;
+using Application.Otps.Login.Send;
 using SharedKernel;
 using Web.Api.Extensions;
 using Web.Api.Infrastructure;
 
-namespace Web.Api.Endpoints.Otps;
+namespace Web.Api.Endpoints.Otps.Login;
 
-internal sealed class Generate : IEndpoint
+internal sealed class Send : IEndpoint
 {
     public sealed record Request(string mobileNumber);
-
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("otp/generate", async (
+        app.MapPost("otp/login/send", async (
             Request request,
-            ICommandHandler<GenerateOtpCommand> handler,
+            ICommandHandler<SendLoginOtpCommand> handler,
             CancellationToken cancellationToken) =>
         {
-            var command = new GenerateOtpCommand(request.mobileNumber);
+            var command = new SendLoginOtpCommand(request.mobileNumber);
 
             Result result = await handler.Handle(command, cancellationToken);
 
