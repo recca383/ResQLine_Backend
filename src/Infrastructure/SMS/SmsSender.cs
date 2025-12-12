@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,24 +21,30 @@ internal class SmsSender(
         string ApiKey = configuration.GetValue<string>("SmsMobile:ApiKey");
         string MessageLink = configuration.GetValue<string>("SmsMobile:MessageLink");
 
+        logger.LogInformation("Creating http request on : {MobileNumber}", MobileNumber);
+        var uriBuilder = new UriBuilder(MessageLink!);
+        System.Collections.Specialized.NameValueCollection? query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        query["apikey"] = ApiKey;
+        query["recipients"] = MobileNumber;
+        query["message"] = Message;
+
+        uriBuilder.Query = query.ToString();
+
+        string url = uriBuilder.ToString();
         try
         {
-            logger.LogInformation("Creating http request on : {MobileNumber}", MobileNumber);
-            HttpResponseMessage response = await client.PostAsJsonAsync(MessageLink, new
-            {
-                apikey = ApiKey,
-                recipients = MobileNumber,
-                message = Message
-            });
+            HttpResponseMessage response = await client.PostAsync(url, null);
 
             logger.LogInformation("Http request sent on : {MobileNumber}", MobileNumber);
 
-            if(!response.IsSuccessStatusCode)
-            {
-                logger.LogError("Http request failed on : {MobileNumber}", response.Content);
-            }
+            string result = await response.Content.ReadAsStringAsync();
+
+            logger.LogInformation("Http request response on : {MobileNumber} => {Result}", MobileNumber, result);
 
             return response.IsSuccessStatusCode;
+        
+
+            
         }
         catch (HttpRequestException ex)
         {
