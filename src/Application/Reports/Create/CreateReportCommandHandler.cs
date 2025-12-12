@@ -25,7 +25,7 @@ internal sealed class CreateReportCommandHandler(
             return Result.Failure<Guid>(UserErrors.NotFound(userContext.UserId));
         }
 
-        var todoItem = new Report
+        var reportId = new Report
         {
             Id = Guid.NewGuid(),
             ReportedBy = user.Id,
@@ -40,12 +40,12 @@ internal sealed class CreateReportCommandHandler(
         };
 
         // Send an email to the department and the user who reported it
-        todoItem.Raise(new ReportCreatedDomainEvent(todoItem.Id));
+        reportId.Raise(new ReportCreatedDomainEvent(reportId));
 
-        context.Reports.Add(todoItem);
+        context.Reports.Add(reportId);
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return todoItem.Id;
+        return reportId.Id;
     }
 }

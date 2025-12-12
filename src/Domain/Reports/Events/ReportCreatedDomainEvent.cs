@@ -2,4 +2,4 @@
 
 namespace Domain.Reports.Events;
 
-public sealed record ReportCreatedDomainEvent(Guid TodoItemId) : IDomainEvent;
+public sealed record ReportCreatedDomainEvent(Report report) : IDomainEvent;

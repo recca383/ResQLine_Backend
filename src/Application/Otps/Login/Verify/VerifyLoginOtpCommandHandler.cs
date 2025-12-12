@@ -16,9 +16,9 @@ namespace Application.Otps.Login.Verify;
 internal sealed class VerifyLoginOtpCommandHandler(
     IApplicationDbContext context,
     ITokenProvider tokenProvider) :
-    ICommandHandler<VerifyLoginOtpCommand>
+    ICommandHandler<VerifyLoginOtpCommand, string>
 {
-    public async Task<Result> Handle(VerifyLoginOtpCommand command, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(VerifyLoginOtpCommand command, CancellationToken cancellationToken)
     {
         OtpStore? storedOtp = await context.OtpStores
             .AsNoTracking()

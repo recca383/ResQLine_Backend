@@ -14,14 +14,14 @@ public class Verify : IEndpoint
     {
         app.MapPost("otp/login/verify", async (
             Request request,
-            ICommandHandler<VerifyLoginOtpCommand> handler,
+            ICommandHandler<VerifyLoginOtpCommand, string> handler,
             CancellationToken cancellationToken) =>
         {
             var command = new VerifyLoginOtpCommand(request.mobileNumber, request.otp);
 
-            Result result = await handler.Handle(command, cancellationToken);
+            Result<string> result = await handler.Handle(command, cancellationToken);
 
-            return result.Match(()=>Results.Accepted(), CustomResults.Problem);
+            return result.Match(Results.Ok, CustomResults.Problem);
         })
         .WithTags(Tags.Otp);
     }
