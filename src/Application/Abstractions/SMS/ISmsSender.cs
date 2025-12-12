@@ -8,4 +8,5 @@ namespace Application.Abstractions.Authentication.SMS;
 public interface ISmsSender
 {
     Task<bool> SendMessage(string MobileNumber, string Message);
+    Task<bool> SendMessagev2(string MobileNumber, string Message);
 }

@@ -19,10 +19,13 @@ internal sealed class OtpService(
     IConfiguration configuration,
     IApplicationDbContext context,
     IDateTimeProvider dateTimeProvider,
-    ITokenProvider tokenProvider,
-    ISmsSender sender) : IOtpService
+    ITokenProvider tokenProvider) : IOtpService
 {
-    public async Task<Result> Send(string mobileNumber, CancellationToken cancellationtoken)
+    public string GetOtpMessage(string otp) 
+        => configuration.GetValue<string>("Otp:Message") + otp;
+
+    public OtpStore Generate(
+        string mobileNumber)
     {
         int otpLength = configuration.GetValue<int>("Otp:Length");
         int expiryinminutes = configuration.GetValue<int>("Otp:ExpiryInMinutes");
@@ -32,11 +35,11 @@ internal sealed class OtpService(
 
         var result = new StringBuilder(otpLength);
 
-        foreach(byte b in bytes)
+        foreach (byte b in bytes)
         {
             result.Append((b % 10).ToString(CultureInfo.InvariantCulture));
         }
-        
+
         var otp = new OtpStore()
         {
             Id = Guid.NewGuid(),
@@ -46,19 +49,8 @@ internal sealed class OtpService(
 
         };
 
-        string message = configuration.GetValue<string>("Otp:Message") + otp.Otp;
-
-        if(sender.SendMessage(mobileNumber, message) == null)
-        {
-            return Result.Failure<bool>(OtpErrors.OtpFailedToSend);
-        }
-
-        context.OtpStores.Add(otp);
-        await context.SaveChangesAsync(cancellationtoken);
-
-        return Result.Success(true);
+        return otp;
     }
-
     public async Task<Result<string>> Verify(
         OtpStore storedOtp,
         string otp,

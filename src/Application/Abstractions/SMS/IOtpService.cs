@@ -9,6 +9,7 @@ using SharedKernel;
 namespace Application.Abstractions.Authentication.SMS;
 public interface IOtpService
 {
-    Task<Result> Send(string mobileNumber, CancellationToken cancellationtoken);
+    string GetOtpMessage(string otp);
+    OtpStore Generate(string mobileNumber);
     Task<Result<string>> Verify(OtpStore storedOtp, string otp, CancellationToken cancellationToken);
 }
