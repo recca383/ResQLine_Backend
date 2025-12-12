@@ -6,6 +6,8 @@
   <ItemGroup>
     <!-- Static code analysis -->
     <PackageVersion Include="DotNetEnv" Version="3.1.1" />
+    <PackageVersion Include="Microsoft.ML.OnnxRuntime" Version="1.23.2" />
+    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.10.0.116381" />
     <!-- Application -->
     <PackageVersion Include="Scrutor" Version="6.1.0" />

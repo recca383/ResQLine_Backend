@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" />
+    <PackageReference Include="SixLabors.ImageSharp" />
+	  <None Include="Model\imageClassmodel.onnx" CopyToOutputDirectory="Always" />
+	  <None Include="Model\test.jpg" CopyToOutputDirectory="Always" />
+  </ItemGroup>
+
+</Project>
