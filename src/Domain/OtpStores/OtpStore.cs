@@ -10,5 +10,6 @@ public sealed class OtpStore
     public Guid Id { get; set; }
     public string MobileNumber { get; set; }
     public string Otp { get; set; }
+    public OtpType OtpType { get; set; }
     public DateTime Expiry { get; set; }
 }
