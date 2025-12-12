@@ -7,12 +7,13 @@ using SharedKernel;
 
 namespace Domain.Reports;
 
-[Flags]
 public enum Category
 {
-    None        = 0b_0000_0000,
-    Fire        = 0b_0000_0001,
-    Electric    = 0b_0000_0010,
-    Flood       = 0b_0000_0100,
-    Violence    = 0b_0000_1000 
+    None                = 0b_0000_0000,
+    Traffic_Accident    = 0b_0000_0100,
+    Fire_Incident       = 0b_0000_0011,
+    Flooding            = 0b_0000_1000,
+    Structural_Damage   = 0b_0000_1001,
+    Medical_Emergency   = 0b_0000_0010,
+    Other_General_Incident = 0b_0010_0000
 }
