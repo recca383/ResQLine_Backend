@@ -5,7 +5,7 @@ namespace Application.Reports.GetById;
 public sealed class ReportResponse
 {
     public Guid Id { get; set; }
-    public byte[] Image { get; set; }
+    public List<byte[]> Image { get; set; }
     public Category Category { get; set; }
     public string? Description { get; set; }
     public Location Location { get; set; }

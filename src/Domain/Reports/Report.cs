@@ -6,7 +6,7 @@ public sealed class Report : Entity
 {
     public Guid Id { get; set; }
     public Guid  ReportedBy { get; set; }
-    public byte[] Image { get; set; }
+    public List<byte[]> Image { get; set; }
     public string? Description { get; set; }
     public Location ReportedAt { get; set; }
     public Status Status { get; set; }

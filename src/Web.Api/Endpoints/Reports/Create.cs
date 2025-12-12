@@ -11,7 +11,7 @@ internal sealed class Create : IEndpoint
 {
     public sealed class Request
     {
-        public required string Image { get; set; }
+        public required List<string> Image { get; set; }
         public Category Category { get; set; } = Category.None;
         public string Title { get; set; }
         public string? Description { get; set; }
@@ -25,11 +25,13 @@ internal sealed class Create : IEndpoint
             ICommandHandler<CreateReportCommand, Guid> handler,
             CancellationToken cancellationToken) =>
         {
-            byte[] image = Convert.FromBase64String(request.Image);
+            var images = request.Image.Select(
+                i => Convert.FromBase64String(i)
+                ).ToList();
 
             var command = new CreateReportCommand
             {
-                Image = image,
+                Image = images,
                 Category = request.Category,
                 Description = request.Description,
                 ReportedAt = request.Location

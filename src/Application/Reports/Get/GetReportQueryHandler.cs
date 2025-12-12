@@ -18,10 +18,13 @@ internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUser
             .Select(report => new ReportResponse
             {
                 Id = report.Id,
+                Description = report.Description!,
                 Image = report.Image,
                 Category = report.Category,
                 Location = report.ReportedAt,
                 CreatedAt = report.DateCreated,
+                Status = report.Status,
+                
             })
             .OrderByDescending(r => r.CreatedAt)
             .Skip((query.pageoffset - 1) * query.pageSize)
