@@ -26,8 +26,9 @@ internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUser
                 Status = report.Status,
                 
             })
+            
             .OrderByDescending(r => r.CreatedAt)
-            .Skip((query.pageoffset - 1) * query.pageSize)
+            .Skip(Math.Max(0,query.pageoffset - 1) * query.pageSize)
             .Take(query.pageSize)
             .ToListAsync(cancellationToken);
             
