@@ -36,15 +36,9 @@ internal class SmsSender(
             HttpResponseMessage response = await client.PostAsync(url, null);
 
             logger.LogInformation("Http request sent on : {MobileNumber}", MobileNumber);
+            logger.LogInformation("Http request response on : {MobileNumber} => SENT!", MobileNumber);
 
-            string result = await response.Content.ReadAsStringAsync();
-
-            logger.LogInformation("Http request response on : {MobileNumber} => {Result}", MobileNumber, result);
-
-            return response.IsSuccessStatusCode;
-        
-
-            
+            return response.IsSuccessStatusCode;  
         }
         catch (HttpRequestException ex)
         {
