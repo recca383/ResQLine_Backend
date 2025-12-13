@@ -38,13 +38,10 @@ internal sealed class ReportCreatedCommandDomainEventHandler
 
         Location:
         {location}
-        (Click link below to open in Maps)
 
-        If using a android device:
-        https://maps.google.com/?q={latitude},{longitude}
-        
-        If using a iOS device:
-        http://maps.apple.com/?q={latitude},{longitude}
+        Exact Coordinates:
+        Latitude: {latitude}
+        Longitude: {longitude}
 
 
         Timestamp:
