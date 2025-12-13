@@ -9,5 +9,6 @@ public record Location (float Latitude,
                         float Longitude,
                         float Altitude,
                         int Accuracy,
-                        int AltitudeAccuracy);
+                        int AltitudeAccuracy,
+                        string ReverseGeoCode);
 

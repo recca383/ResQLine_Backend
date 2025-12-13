@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AI;
 using Application.Abstractions.Authentication.SMS;
@@ -16,9 +17,9 @@ using SharedKernel;
 namespace Application.Reports.Create;
 internal sealed class ReportCreatedCommandDomainEventHandler
     (
-    IApplicationDbContext context,
-    ISmsSender sender,
-    ILogger logger
+        IApplicationDbContext context,
+        ISmsSender sender,
+        ILogger logger
     ):
     IDomainEventHandler<ReportCreatedDomainEvent>
 
@@ -36,9 +37,15 @@ internal sealed class ReportCreatedCommandDomainEventHandler
         "{description}"
 
         Location:
-        Latitude: {latitude}
-        Longitude: {longitude}
-        (Click to open in Maps)
+        {location}
+        (Click link below to open in Maps)
+
+        If using a android device:
+        https://maps.google.com/?q={latitude},{longitude}
+        
+        If using a iOS device:
+        http://maps.apple.com/?q={latitude},{longitude}
+
 
         Timestamp:
         {Timestamp}
@@ -89,7 +96,8 @@ internal sealed class ReportCreatedCommandDomainEventHandler
                          .Replace("{ListOfTags}", GetListOfTags(report))
                          .Replace("{latitude}", report.ReportedAt.Latitude.ToString(CultureInfo.InvariantCulture))
                          .Replace("{longitude}", report.ReportedAt.Longitude.ToString(CultureInfo.InvariantCulture))
-                         .Replace("{Timestamp}", GetPhilippineTime(report.DateCreated));
+                         .Replace("{Timestamp}", GetPhilippineTime(report.DateCreated))
+                         .Replace("{location}", report.ReportedAt.ReverseGeoCode);
 
         return message;
     }
