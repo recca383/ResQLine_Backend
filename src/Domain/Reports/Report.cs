@@ -1,4 +1,5 @@
-﻿using SharedKernel;
+﻿using System.Globalization;
+using SharedKernel;
 
 namespace Domain.Reports;
 
@@ -16,6 +17,21 @@ public sealed class Report : Entity
     public DateTime? DateLastUpdated { get; set; }
     public DateTime? DateResolved { get; set; }
     public Priority Priority { get; set; }
-    
-    
+
+    public bool IsActive => !IsDeleted;
+
+    public string GetCategoryString() => Category switch
+    {
+        Category.Fire_Incident => "Fire",
+        Category.Flooding => "Flooding",
+        Category.Medical_Emergency => "Medical Emergency",
+        Category.Structural_Damage => "Structural Damage",
+        Category.Traffic_Accident => "Traffic Accident",
+        Category.Other_General_Incident => "",
+        _ => "Unknown"
+    };
+
+
 }
+
+
