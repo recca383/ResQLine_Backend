@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions.Data;
 using Domain.OtpStores;
 using Domain.Reports;
+using Domain.Roles;
 using Domain.Users;
 using Infrastructure.DomainEvents;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,8 @@ public sealed class ApplicationDbContext(
 
     public DbSet<Report> Reports { get; set; }
     public DbSet<OtpStore> OtpStores { get; set; }
+
+    public DbSet<Role> Roles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
