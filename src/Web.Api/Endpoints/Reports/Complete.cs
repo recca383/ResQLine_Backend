@@ -22,6 +22,11 @@ internal sealed class Complete : IEndpoint
             return result.Match(Results.NoContent, CustomResults.Problem);
         })
         .WithTags(Tags.Reports)
-        .RequireAuthorization();
+        .RequireAuthorization(
+            AuthRequirements.RESPONDER_PNP,
+            AuthRequirements.RESPONDER_BFP,
+            AuthRequirements.RESPONDER_CTMO,
+            AuthRequirements.ADMIN)
+        ;
     }
 }
