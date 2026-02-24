@@ -1,4 +1,5 @@
-﻿using SharedKernel;
+﻿using System.Globalization;
+using SharedKernel;
 
 namespace Infrastructure.Time;
 
@@ -13,4 +14,11 @@ internal sealed class DateTimeProvider : IDateTimeProvider
         DateTime.Now,
         PhTimeZone
         );
+
+    public string GetPhilippineTime(DateTime dateToConvert)
+    {
+        DateTime philippineTime = TimeZoneInfo.ConvertTime(dateToConvert, PhTimeZone);
+
+        return philippineTime.ToString("MMM dd, yyyy hh:mm t", CultureInfo.InvariantCulture);
+    }
 }
