@@ -1,5 +1,6 @@
 using System.Reflection;
 using Application;
+using Application.Abstractions.Hubs;
 using DotNetEnv;
 using HealthChecks.UI.Client;
 using Infrastructure;
@@ -22,6 +23,11 @@ builder.Services
     .AddApplication()
     .AddPresentation()
     .AddInfrastructure(builder.Configuration);
+
+builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder => builder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowAnyOrigin()));
 
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
 
@@ -51,6 +57,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseCors(policy => policy.AllowAnyOrigin());
 // REMARK: If you want to use Controllers, you'll need this.
 app.MapControllers();
 
