@@ -2,52 +2,47 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Resources;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AI;
 using Application.Abstractions.Authentication.SMS;
 using Application.Abstractions.Data;
+using Application.Abstractions.Hubs;
 using Domain.Reports;
 using Domain.Reports.Events;
 using Domain.Users;
+using Microsoft.AspNetCore.SignalR;
 using Serilog;
 using SharedKernel;
-
 namespace Application.Reports.Create;
+
+
 internal sealed class ReportCreatedCommandDomainEventHandler
     (
         IApplicationDbContext context,
         ISmsSender sender,
-        ILogger logger
-    ):
+        ILogger logger,
+        IDateTimeProvider dateTimeProvider,
+        IHubContext<NotificationHub> hubContext
+    ) :
     IDomainEventHandler<ReportCreatedDomainEvent>
 
 {
-    private const string MESSAGE_FOR_RESPONDERS =
-        """
-                RESQLINE EMERGENCY REPORT
-
-        Incident: {incident}
-
-        AI Image Analysis:
-        {ListOfTags}
-
-        Reporter Notes:
-        "{description}"
-
-        Location:
-        {location}
-
-        Exact Coordinates:
-        Latitude: {latitude}
-        Longitude: {longitude}
-
-
-        Timestamp:
-        {Timestamp}
-        ResqLine Automated Dispatch
-        """;
+    private sealed record ReportCreatedNotification(
+        Guid Id,
+        string Title,
+        string Type,
+        float Longitude,
+        float Latitude,
+        float Confidence,
+        string Status,
+        string TimeStamp,
+        bool IsActive
+    );
 
     public Task Handle(ReportCreatedDomainEvent domainEvent, CancellationToken cancellationToken)
     {
@@ -55,9 +50,34 @@ internal sealed class ReportCreatedCommandDomainEventHandler
         User reportedby = context.Users
             .FirstOrDefault(u => u.Id == domainEvent.report.ReportedBy)!;
 
+        Report report = domainEvent.report;
+
+        string reportCategory = report.GetCategoryString();
+
+        string date = dateTimeProvider.GetPhilippineTime(report.DateCreated);
+
+        hubContext.Clients.All.SendAsync(
+            "ReportCreated",
+            new ReportCreatedNotification
+            (
+                report.Id,
+                report.Description ?? "No Title",
+                reportCategory,
+                report.ReportedAt.Longitude,
+                report.ReportedAt.Latitude,
+                report.ReportedAt.Accuracy,
+                Enum.GetName(report.Status)!,
+                date,
+                report.IsActive
+
+            ),
+            cancellationToken
+            );
+
+
         sender.SendMessage(
             reportedby.MobileNumber,
-            "Thank you for your report. Emergency responders have been notified and are on their way to assist you."
+            MessageTemplates.THANK_FOR_REPORTING
         );
 
         logger.Information(
@@ -69,12 +89,13 @@ internal sealed class ReportCreatedCommandDomainEventHandler
         // == notify Responders about new report ==
         List<string> PhoneNumbersofResponders = GetRespondersPhoneNumber(domainEvent.report.Category);
 
-        foreach(string number in PhoneNumbersofResponders)
+        foreach (string number in PhoneNumbersofResponders)
         {
             sender.SendMessage(
                 number,
-                GetMessage(domainEvent.report, domainEvent.report.Category)
-            );
+                MessageTemplates.CreateSummaryReport(domainEvent.report, dateTimeProvider, GetListOfTags(domainEvent.report)
+            ));
+
             logger.Information(
                 "Notified responder at {MobileNumber} about new report of category {Category}.",
                 number,
@@ -83,105 +104,73 @@ internal sealed class ReportCreatedCommandDomainEventHandler
         }
         return Task.CompletedTask;
     }
-    private string GetMessage(Report report, Category category)
+
+    private sealed record class TagScore()
     {
-        string message = MESSAGE_FOR_RESPONDERS
-                         .Replace("{incident}", GetCategory(category))
-                         .Replace("{description}", string.IsNullOrWhiteSpace(report.Description) ?
-                                                   "No additional notes provided."
-                                                   : report.Description)
-                         .Replace("{ListOfTags}", GetListOfTags(report))
-                         .Replace("{latitude}", report.ReportedAt.Latitude.ToString(CultureInfo.InvariantCulture))
-                         .Replace("{longitude}", report.ReportedAt.Longitude.ToString(CultureInfo.InvariantCulture))
-                         .Replace("{Timestamp}", GetPhilippineTime(report.DateCreated))
-                         .Replace("{location}", report.ReportedAt.ReverseGeoCode);
+        public string Tag;
+        public float Score;
+    };
 
-        return message;
-    }
-
-    private string GetListOfTags(Report report)
+    public string GetListOfTags(Report report)
     {
         var tags = new StringBuilder();
 
-        var imageClassification = new ImageClassification();
+        var multimodalClassification = new MultimodalPredictor();
 
         logger.Information("Performing image classification for report ID {ReportId}.", report.Id);
-        HashSet<string> predictedTags = imageClassification.Predict(report.Image);
+        float[] predictedtagsnums = multimodalClassification.Predict(report.Description!, report.Image[0]);
 
-        if (predictedTags.Count == 0)
+        var predictedTags = predictedtagsnums
+            .Select((score, index) => new TagScore() { Tag = Constants.UNION_LABELS[index], Score = score })
+            .Where(i => i.Score >= 0.34)
+            .OrderByDescending(x => x.Score)
+            .ToList();
+
+        if (!predictedTags.Any())
         {
             tags.AppendLine("No significant tags detected.");
         }
         else
         {
-            foreach (string tag in predictedTags)
+            foreach (TagScore tag in predictedTags)
             {
-                tags.AppendLine(CultureInfo.InvariantCulture,$"- {tag}");
+                tags.AppendLine(CultureInfo.InvariantCulture, $"- {tag.Tag}");
             }
         }
 
         logger.Information("Image classification completed for report ID {ReportId}. Detected tags: {Tags}.", report.Id, string.Join(", ", predictedTags));
 
-        imageClassification.Dispose();
+        multimodalClassification.Dispose();
 
         return tags.ToString();
     }
 
-    private string GetCategory(Category category) => category switch
-    {
-        Category.Fire_Incident => "Fire",
-        Category.Flooding => "Flooding",
-        Category.Medical_Emergency => "Medical Emergency",
-        Category.Structural_Damage => "Structural Damage",
-        Category.Traffic_Accident => "Traffic Accident",
-        Category.Other_General_Incident => "",
-        _ => "Unknown"
-    };
-
-    private string GetPhilippineTime(DateTime dateTimeToConvert)
-    {
-        string philippinesTimeZoneId = "Singapore Standard Time";
-
-        var philippinesZone = TimeZoneInfo.FindSystemTimeZoneById(philippinesTimeZoneId);
-
-        DateTime philippineTime = TimeZoneInfo.ConvertTime(dateTimeToConvert, philippinesZone);
-
-        return philippineTime.ToString("MMM dd, yyyy hh:mm", CultureInfo.InvariantCulture);
-    }
     private List<string> GetRespondersPhoneNumber(Category category)
     {
         List<string> phone_numbers = new();
 
-        if(And(Department.Fire, category) == Department.Fire)
+        if (Department.Fire.And(category) == Department.Fire)
         {
             phone_numbers.Add("639150177937");
         }
 
-        if (And(Department.Hospital, category) == Department.Hospital)
+        if (Department.Hospital.And(category) == Department.Hospital)
         {
             phone_numbers.Add("639814583389");
         }
 
-        if (And(Department.Police, category) == Department.Police)
+        if (Department.Police.And(category) == Department.Police)
         {
             phone_numbers.Add("639310644503");
         }
 
-        if (And(Department.Disaster_Response, category) == Department.Disaster_Response)
+        if (Department.Disaster_Response.And(category) == Department.Disaster_Response)
         {
             phone_numbers.Add("639092465965");
         }
 
         return phone_numbers;
     }
-    private static TFlags And<TFlags, TEnum>(TFlags flags, TEnum value)
-    where TFlags : Enum
-    where TEnum : Enum
-    {
-        int result = Convert.ToInt32(flags, CultureInfo.InvariantCulture) 
-                    & Convert.ToInt32(value, CultureInfo.InvariantCulture);
 
-        return (TFlags)Enum.ToObject(typeof(TFlags), result);
-    }
-
+    
 }
