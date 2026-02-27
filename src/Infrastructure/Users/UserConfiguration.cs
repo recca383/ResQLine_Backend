@@ -1,4 +1,5 @@
-﻿using Domain.Users;
+﻿using Domain.Roles;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,5 +12,11 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(u => u.Id);
 
         builder.HasIndex(u => u.MobileNumber).IsUnique();
+
+        builder.HasOne<Role>(u => u.Role)
+            .WithMany(r => r.Users)
+            .HasForeignKey(t => t.RoleId);
+
+        builder.Navigation(u => u.Role).AutoInclude();
     }
 }
