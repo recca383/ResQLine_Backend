@@ -28,6 +28,12 @@ internal sealed class Get : IEndpoint
             return result.Match(Results.Ok, CustomResults.Problem);
         })
         .WithTags(Tags.Reports)
-        .RequireAuthorization();
+        //.RequireAuthorization(
+        //    AuthRequirements.RESPONDER_PNP,
+        //    AuthRequirements.RESPONDER_BFP,
+        //    AuthRequirements.RESPONDER_CTMO,
+        //    AuthRequirements.ADMIN)
+        ;
+        
     }
 }
