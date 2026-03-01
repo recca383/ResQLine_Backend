@@ -105,36 +105,25 @@ internal sealed class ReportCreatedCommandDomainEventHandler
         return Task.CompletedTask;
     }
 
-    private sealed record class TagScore()
-    {
-        public string Tag;
-        public float Score;
-    };
-
     public string GetListOfTags(Report report)
     {
         var tags = new StringBuilder();
 
-        var multimodalClassification = new MultimodalPredictor();
+        var multimodalClassification = new ImageClassification();
 
         logger.Information("Performing image classification for report ID {ReportId}.", report.Id);
-        float[] predictedtagsnums = multimodalClassification.Predict(report.Description!, report.Image[0]);
+        HashSet<string> predictedTags = multimodalClassification.Predict(report.Image);
 
-        var predictedTags = predictedtagsnums
-            .Select((score, index) => new TagScore() { Tag = Constants.UNION_LABELS[index], Score = score })
-            .Where(i => i.Score >= 0.34)
-            .OrderByDescending(x => x.Score)
-            .ToList();
-
+ 
         if (!predictedTags.Any())
         {
             tags.AppendLine("No significant tags detected.");
         }
         else
         {
-            foreach (TagScore tag in predictedTags)
+            foreach (string tag in predictedTags)
             {
-                tags.AppendLine(CultureInfo.InvariantCulture, $"- {tag.Tag}");
+                tags.AppendLine(CultureInfo.InvariantCulture, $"- {tag}");
             }
         }
 
