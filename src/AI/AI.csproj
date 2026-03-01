@@ -7,10 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="HuggingFace" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime" />
     <PackageReference Include="SixLabors.ImageSharp" />
-	  <None Include="Model\imageClassmodel.onnx" CopyToOutputDirectory="Always" />
-	  <None Include="Model\test.jpg" CopyToOutputDirectory="Always" />
+    <PackageReference Include="System.Drawing.Common" />
+    <PackageReference Include="Tokenizers.HuggingFace" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Model\test1.jpg" CopyToOutputDirectory="Always" />
+	<None Update="Model\image_recognition.onnx" CopyToOutputDirectory="Always" />
+	<None Update="Model\label_map.json" CopyToOutputDirectory="Always" />
+
   </ItemGroup>
 
 </Project>
