@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions.Messaging;
 using Application.Reports.Get;
 using SharedKernel;
+using Web.Api.Endpoints.Requests;
 using Web.Api.Extensions;
 using Web.Api.Infrastructure;
 
@@ -11,16 +12,14 @@ internal sealed class Get : IEndpoint
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("reports", async (
-            string sort,
-            int pageSize,
-            int pageoffset,
+            [AsParameters]GetRequest request,
             IQueryHandler<GetReportQuery, List<ReportResponse>> handler,
             CancellationToken cancellationToken) =>
         {
             var query = new GetReportQuery(
-                                    sort,
-                                    pageSize,
-                                    pageoffset
+                                    request.sort,
+                                    request.pageSize,
+                                    request.pageoffset
                                     );
 
             Result<List<ReportResponse>> result = await handler.Handle(query, cancellationToken);
@@ -28,11 +27,6 @@ internal sealed class Get : IEndpoint
             return result.Match(Results.Ok, CustomResults.Problem);
         })
         .WithTags(Tags.Reports)
-        //.RequireAuthorization(
-        //    AuthRequirements.RESPONDER_PNP,
-        //    AuthRequirements.RESPONDER_BFP,
-        //    AuthRequirements.RESPONDER_CTMO,
-        //    AuthRequirements.ADMIN)
         ;
         
     }
