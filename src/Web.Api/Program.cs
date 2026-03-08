@@ -57,7 +57,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseCors(policy => policy.AllowAnyOrigin());
+app.UseCors("CorsPolicy");
 // REMARK: If you want to use Controllers, you'll need this.
 app.MapControllers();
 
