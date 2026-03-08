@@ -13,6 +13,7 @@ public sealed class Report : Entity
     public Status Status { get; set; }
     public Category Category { get; set; }
     public bool IsDeleted { get; set; }
+    public Dictionary<string, float> AIProbabilities { get; set; } = new();
     public DateTime DateCreated { get; set; }
     public DateTime? DateLastUpdated { get; set; }
     public DateTime? DateResolved { get; set; }
