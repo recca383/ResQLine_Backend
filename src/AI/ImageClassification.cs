@@ -13,7 +13,7 @@ public class ImageClassification : IDisposable
     private readonly Dictionary<int, string> _labelMap;
 
     private const int IMG_SIZE = 224;
-    private const float PREDICTION_THRESHOLD = 0.46f;
+    //private const float PREDICTION_THRESHOLD = 0.46f;
 
     public ImageClassification()
     {
@@ -29,9 +29,9 @@ public class ImageClassification : IDisposable
         _labelMap = JsonSerializer.Deserialize<Dictionary<int, string>>(json)!;
     }
 
-    public HashSet<string> Predict(List<byte[]> inputs)
+    public Dictionary<string, float> Predict(List<byte[]> inputs)
     {
-        HashSet<string> finalPredictions = new();
+        Dictionary<string, float> finalPredictions = new();
 
         foreach (byte[] bytes in inputs)
         {
@@ -39,14 +39,11 @@ public class ImageClassification : IDisposable
 
             for (int i = 0; i < probabilities.Length; i++)
             {
-                if (probabilities[i] >= PREDICTION_THRESHOLD)
+                if (!_labelMap.TryGetValue(i, out string? label))
                 {
-                    if (!_labelMap.TryGetValue(i, out string? label))
-                    {
-                        continue;
-                    }
-                    finalPredictions.Add(label);
+                    continue;
                 }
+                finalPredictions.Add(label, probabilities[i]);
             }
         }
 
