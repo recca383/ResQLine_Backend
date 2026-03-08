@@ -3,6 +3,7 @@ using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
 using Domain.Reports;
 using Domain.Reports.Events;
+using Domain.Reports.Events.Admin;
 using Microsoft.EntityFrameworkCore;
 using SharedKernel;
 
@@ -30,7 +31,7 @@ internal sealed class PatchStatusCommandHandler(
 
         report.Status = command.Status;
 
-        //report.Raise(new ReportResolvedDomainEvent(report.Id));
+        report.Raise(new AdminReportPatchStatusDomainEvent(report));
 
         await context.SaveChangesAsync(cancellationToken);
 
