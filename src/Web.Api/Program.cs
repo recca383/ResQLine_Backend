@@ -4,6 +4,7 @@ using Application.Abstractions.Hubs;
 using DotNetEnv;
 using HealthChecks.UI.Client;
 using Infrastructure;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using Web.Api;
