@@ -16,6 +16,7 @@ using Domain.Reports;
 using Domain.Reports.Events;
 using Domain.Users;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SharedKernel;
 namespace Application.Reports.Create;
@@ -50,9 +51,10 @@ internal sealed class ReportCreatedCommandDomainEventHandler
         User reportedby = context.Users
             .FirstOrDefault(u => u.Id == domainEvent.report.ReportedBy)!;
 
-        Report report = domainEvent.report;
+        Report report = context.Reports
+            .FirstOrDefault(r => r.Id ==  domainEvent.report.Id);
 
-        string reportCategory = report.GetCategoryString();
+        string reportCategory = report!.GetCategoryString();
 
         string date = dateTimeProvider.GetPhilippineTime(report.DateCreated);
 
@@ -89,11 +91,13 @@ internal sealed class ReportCreatedCommandDomainEventHandler
         // == notify Responders about new report ==
         List<string> PhoneNumbersofResponders = GetRespondersPhoneNumber(domainEvent.report.Category);
 
+        string listofTags = GetListOfTags(report);
+
         foreach (string number in PhoneNumbersofResponders)
         {
             sender.SendMessage(
                 number,
-                MessageTemplates.CreateSummaryReport(domainEvent.report, dateTimeProvider, GetListOfTags(domainEvent.report)
+                MessageTemplates.CreateSummaryReport(domainEvent.report, dateTimeProvider, listofTags
             ));
 
             logger.Information(
@@ -102,6 +106,8 @@ internal sealed class ReportCreatedCommandDomainEventHandler
                 domainEvent.report.Category.ToString()
             );
         }
+
+        context.SaveChangesAsync(cancellationToken);
         return Task.CompletedTask;
     }
 
@@ -112,7 +118,7 @@ internal sealed class ReportCreatedCommandDomainEventHandler
         var multimodalClassification = new ImageClassification();
 
         logger.Information("Performing image classification for report ID {ReportId}.", report.Id);
-        HashSet<string> predictedTags = multimodalClassification.Predict(report.Image);
+        Dictionary<string, float> predictedTags = multimodalClassification.Predict(report.Image);
 
  
         if (!predictedTags.Any())
@@ -121,12 +127,13 @@ internal sealed class ReportCreatedCommandDomainEventHandler
         }
         else
         {
-            foreach (string tag in predictedTags)
+            foreach (KeyValuePair<string, float> predictedpair in predictedTags)
             {
-                tags.AppendLine(CultureInfo.InvariantCulture, $"- {tag}");
+                tags.AppendLine(CultureInfo.InvariantCulture, $"- {predictedpair.Key} : {predictedpair.Value*100}%");
             }
         }
-
+        report.AIProbabilities = predictedTags;
+        
         logger.Information("Image classification completed for report ID {ReportId}. Detected tags: {Tags}.", report.Id, string.Join(", ", predictedTags));
 
         multimodalClassification.Dispose();
