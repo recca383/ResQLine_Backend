@@ -11,4 +11,5 @@ public sealed class ReportResponse
     public Location Location { get; set; }
     public DateTime CreatedAt { get; set; }
     public Status Status { get; set; }
+    public Dictionary<string, float> AIProbabilities { get; set; }
 }
