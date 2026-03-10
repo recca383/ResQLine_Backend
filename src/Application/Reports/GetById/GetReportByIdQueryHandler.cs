@@ -22,6 +22,7 @@ internal sealed class GetReportByIdQueryHandler(IApplicationDbContext context, I
                 Category = reportitem.Category,
                 Description = reportitem.Description,
                 Location = reportitem.ReportedAt,
+                AIProbabilities = reportitem.AIProbabilities,
             })
             .SingleOrDefaultAsync(cancellationToken);
 
