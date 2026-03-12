@@ -25,6 +25,9 @@ internal sealed class GetReportQueryHandler(IApplicationDbContext context)
                 CreatedAt = report.DateCreated,
                 Status = report.Status,
                 AIProbabilities = report.AIProbabilities,
+                ReportByName = report.ReportedBy.FirstName + " " 
+                             + report.ReportedBy.LastName,
+                ReportByPhoneNumber = report.ReportedBy.MobileNumber
                 
             })
             .OrderByDescending(r => r.CreatedAt)
