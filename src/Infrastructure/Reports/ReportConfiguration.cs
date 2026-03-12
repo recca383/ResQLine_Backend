@@ -16,9 +16,7 @@ internal sealed class ReportConfiguration : IEntityTypeConfiguration<Report>
         builder.Property(t => t.DateResolved).HasConversion(d => d != null ? DateTime.SpecifyKind(d.Value, DateTimeKind.Utc) : d, v => v);
         builder.Property(t => t.DateLastUpdated).HasConversion(d => d != null ? DateTime.SpecifyKind(d.Value, DateTimeKind.Utc) : d, v => v);
         builder.Property(t => t.AIProbabilities).HasColumnType("jsonb");
-        
-        
-        builder.HasOne<User>().WithMany().HasForeignKey(t => t.ReportedBy);
+
         builder.OwnsOne<Location>(t => t.ReportedAt);
     }
 }

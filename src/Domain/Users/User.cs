@@ -1,4 +1,5 @@
 ﻿using Domain.Addresses;
+using Domain.Reports;
 using Domain.Roles;
 using SharedKernel;
 
@@ -13,4 +14,5 @@ public sealed class User : Entity
     public string? UserName { get; set; }
     public Guid RoleId { get; set; }
     public Role Role{ get; set; }
+    public ICollection<Report> Reports { get; set; }
 }

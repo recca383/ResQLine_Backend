@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Domain.Users;
 using SharedKernel;
 
 namespace Domain.Reports;
@@ -6,7 +7,8 @@ namespace Domain.Reports;
 public sealed class Report : Entity
 {
     public Guid Id { get; set; }
-    public Guid  ReportedBy { get; set; }
+    public Guid  ReportedById { get; set; }
+    public User ReportedBy { get; set; }
     public List<byte[]> Image { get; set; }
     public string? Description { get; set; }
     public Location ReportedAt { get; set; }
