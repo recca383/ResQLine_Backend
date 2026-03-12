@@ -30,6 +30,9 @@ internal sealed class GetReportByIdQueryHandler(IApplicationDbContext context)
             Status = report.Status,
             CreatedAt = report.DateCreated,
             AIProbabilities = report.AIProbabilities,
+            ReportByName = report.ReportedBy.FirstName + " "
+                             + report.ReportedBy.LastName,
+            ReportByPhoneNumber = report.ReportedBy.MobileNumber
         };
         return result;
     }
