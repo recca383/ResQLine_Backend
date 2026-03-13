@@ -15,7 +15,7 @@ internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUser
     {
         List<ReportResponse> reports = await context.Reports
             .AsNoTracking()
-            .Where(u => u.ReportedBy == user.UserId && !u.IsDeleted)
+            .Where(u => u.ReportedById == user.UserId && !u.IsDeleted)
             .Select(report => new ReportResponse
             {
                 Id = report.Id,
@@ -26,7 +26,10 @@ internal sealed class GetReportQueryHandler(IApplicationDbContext context, IUser
                 CreatedAt = report.DateCreated,
                 Status = report.Status,
                 AIProbabilities = report.AIProbabilities,
-                
+                ReportByName = report.ReportedBy.FirstName + " "
+                             + report.ReportedBy.LastName,
+                ReportByPhoneNumber = report.ReportedBy.MobileNumber
+
             })
             .OrderByDescending(r => r.CreatedAt)
             .Skip(Math.Max(0,query.pageoffset - 1) * query.pageSize)

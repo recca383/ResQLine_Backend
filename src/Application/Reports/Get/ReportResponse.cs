@@ -12,4 +12,6 @@ public sealed class ReportResponse
     public DateTime CreatedAt { get; set; }
     public Status Status { get; set; }
     public Dictionary<string, float> AIProbabilities{ get; set; }
+    public string ReportByName { get; set; }
+    public string ReportByPhoneNumber { get; set; }
 }
