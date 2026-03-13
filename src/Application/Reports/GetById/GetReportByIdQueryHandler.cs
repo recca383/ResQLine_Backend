@@ -14,15 +14,18 @@ internal sealed class GetReportByIdQueryHandler(IApplicationDbContext context, I
     {
         ReportResponse? report = await context.Reports
             .AsNoTracking()
-            .Where(reportitem => reportitem.Id == query.ReportId && reportitem.ReportedBy == userContext.UserId)
-            .Select(reportitem => new ReportResponse
+            .Where(reportitem => reportitem.Id == query.ReportId && reportitem.ReportedById == userContext.UserId)
+            .Select(report => new ReportResponse
             {
-                Id = reportitem.Id,
-                Images = reportitem.Image,
-                Category = reportitem.Category,
-                Description = reportitem.Description,
-                Location = reportitem.ReportedAt,
-                AIProbabilities = reportitem.AIProbabilities,
+                Id = report.Id,
+                Images = report.Image,
+                Category = report.Category,
+                Description = report.Description,
+                Location = report.ReportedAt,
+                AIProbabilities = report.AIProbabilities,
+                ReportByName = report.ReportedBy.FirstName + " "
+                             + report.ReportedBy.LastName,
+                ReportByPhoneNumber = report.ReportedBy.MobileNumber
             })
             .SingleOrDefaultAsync(cancellationToken);
 
