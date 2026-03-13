@@ -49,7 +49,8 @@ internal sealed class ReportCreatedCommandDomainEventHandler
     {
         // == notify Users that the report was sent to responders ==
         User reportedby = context.Users
-            .FirstOrDefault(u => u.Id == domainEvent.report.ReportedBy)!;
+            .AsNoTracking()
+            .FirstOrDefault(u => u.Id == domainEvent.report.ReportedById)!;
 
         Report report = context.Reports
             .FirstOrDefault(r => r.Id ==  domainEvent.report.Id);
