@@ -43,14 +43,23 @@ if (app.Environment.IsDevelopment())
     app.ApplyMigrations();
 }
 
-app.MapHealthChecks("health", new HealthCheckOptions
+app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
 app.UseRequestContextLogging();
 
-app.UseSerilogRequestLogging();
+app.UseSerilogRequestLogging(options => 
+    options.GetLevel = (httpContext, elapsed, ex) =>
+    {
+        if (httpContext.Request.Path.StartsWithSegments("/health"))
+        {
+            return Serilog.Events.LogEventLevel.Verbose;
+        }
+
+        return Serilog.Events.LogEventLevel.Information;
+    });
 
 app.UseExceptionHandler();
 
