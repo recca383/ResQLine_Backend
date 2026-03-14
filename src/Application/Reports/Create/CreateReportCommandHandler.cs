@@ -28,7 +28,7 @@ internal sealed class CreateReportCommandHandler(
         var reportId = new Report
         {
             Id = Guid.NewGuid(),
-            ReportedBy = user.Id,
+            ReportedById = user.Id,
             Image = command.Image,
             Description = command.Description,
             ReportedAt = command.ReportedAt,

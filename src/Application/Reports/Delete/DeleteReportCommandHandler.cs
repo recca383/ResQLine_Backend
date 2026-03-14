@@ -14,7 +14,7 @@ internal sealed class DeleteReportCommandHandler(IApplicationDbContext context, 
     public async Task<Result> Handle(DeleteReportCommand command, CancellationToken cancellationToken)
     {
         Report? report = await context.Reports
-            .SingleOrDefaultAsync(t => t.Id == command.ReportId && t.ReportedBy == userContext.UserId, cancellationToken);
+            .SingleOrDefaultAsync(t => t.Id == command.ReportId && t.ReportedById == userContext.UserId, cancellationToken);
 
         if (report is null)
         {
