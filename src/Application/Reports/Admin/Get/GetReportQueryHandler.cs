@@ -14,6 +14,7 @@ internal sealed class GetReportQueryHandler(IApplicationDbContext context)
     public async Task<Result<List<ReportResponse>>> Handle(GetReportQuery query, CancellationToken cancellationToken)
     {
         List<ReportResponse> reports = await context.Reports
+            .Include(r => r.ReportedBy)
             .AsNoTracking()
             .Select(report => new ReportResponse
             {
