@@ -90,84 +90,54 @@ internal sealed class ReportCreatedCommandDomainEventHandler
         );
 
         // == notify Responders about new report ==
-        List<string> PhoneNumbersofResponders = GetRespondersPhoneNumber(domainEvent.report.Category);
+        //List<string> PhoneNumbersofResponders = GetRespondersPhoneNumber(domainEvent.report.Category);
 
-        string listofTags = GetListOfTags(report);
+        //foreach (string number in PhoneNumbersofResponders)
+        //{
+        //    sender.SendMessage(
+        //        number,
+        //        MessageTemplates.CreateSummaryReport(domainEvent.report, dateTimeProvider, listofTags
+        //    ));
 
-        foreach (string number in PhoneNumbersofResponders)
-        {
-            sender.SendMessage(
-                number,
-                MessageTemplates.CreateSummaryReport(domainEvent.report, dateTimeProvider, listofTags
-            ));
-
-            logger.Information(
-                "Notified responder at {MobileNumber} about new report of category {Category}.",
-                number,
-                domainEvent.report.Category.ToString()
-            );
-        }
+        //    logger.Information(
+        //        "Notified responder at {MobileNumber} about new report of category {Category}.",
+        //        number,
+        //        domainEvent.report.Category.ToString()
+        //    );
+        //}
 
         context.SaveChangesAsync(cancellationToken);
         return Task.CompletedTask;
     }
 
-    public string GetListOfTags(Report report)
-    {
-        var tags = new StringBuilder();
+    
 
-        var multimodalClassification = new ImageClassification();
+    //private List<string> GetRespondersPhoneNumber(Category category)
+    //{
+    //    List<string> phone_numbers = new();
 
-        logger.Information("Performing image classification for report ID {ReportId}.", report.Id);
-        Dictionary<string, float> predictedTags = multimodalClassification.Predict(report.Image);
+    //    if (Department.Fire.And(category) == Department.Fire)
+    //    {
+    //        phone_numbers.Add("639150177937");
+    //    }
 
- 
-        if (!predictedTags.Any())
-        {
-            tags.AppendLine("No significant tags detected.");
-        }
-        else
-        {
-            foreach (KeyValuePair<string, float> predictedpair in predictedTags)
-            {
-                tags.AppendLine(CultureInfo.InvariantCulture, $"- {predictedpair.Key} : {predictedpair.Value*100}%");
-            }
-        }
-        report.AIProbabilities = predictedTags;
-        
-        logger.Information("Image classification completed for report ID {ReportId}. Detected tags: {Tags}.", report.Id, string.Join(", ", predictedTags));
+    //    if (Department.Hospital.And(category) == Department.Hospital)
+    //    {
+    //        phone_numbers.Add("639814583389");
+    //    }
 
-        multimodalClassification.Dispose();
+    //    if (Department.Police.And(category) == Department.Police)
+    //    {
+    //        phone_numbers.Add("639310644503");
+    //    }
 
-        return tags.ToString();
-    }
+    //    if (Department.Disaster_Response.And(category) == Department.Disaster_Response)
+    //    {
+    //        phone_numbers.Add("639092465965");
+    //    }
 
-    private List<string> GetRespondersPhoneNumber(Category category)
-    {
-        List<string> phone_numbers = new();
-
-        if (Department.Fire.And(category) == Department.Fire)
-        {
-            phone_numbers.Add("639150177937");
-        }
-
-        if (Department.Hospital.And(category) == Department.Hospital)
-        {
-            phone_numbers.Add("639814583389");
-        }
-
-        if (Department.Police.And(category) == Department.Police)
-        {
-            phone_numbers.Add("639310644503");
-        }
-
-        if (Department.Disaster_Response.And(category) == Department.Disaster_Response)
-        {
-            phone_numbers.Add("639092465965");
-        }
-
-        return phone_numbers;
-    }
+    //    return phone_numbers;
+    //}
 
     
 }
