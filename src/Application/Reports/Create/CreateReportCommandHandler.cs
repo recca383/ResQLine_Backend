@@ -37,7 +37,7 @@ internal sealed class CreateReportCommandHandler(
             Image = command.Image,
             Description = command.Description,
             ReportedAt = command.ReportedAt,
-            Status = Status.Under_Review,
+            Status = Status.Submitted,
             Category = command.Category,
             IsDeleted = false,
             DateCreated = dateTimeProvider.UtcNow,
